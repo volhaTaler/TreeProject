@@ -40,12 +40,15 @@ public class Baum implements IBaum {
 		Node childNode1 = findNode(child1.getName());
 		Node childNode2 = findNode(child2.getName());
 		
-		
-		return childNode1 !=null && childNode2 !=null && 
+		if(childNode1 !=null && childNode2 !=null)
+		{
+		return (childNode1.fatherName != null && childNode2.fatherName !=null) ||
+				(childNode1.motherName != null && childNode2.motherName != null) ||
 				(childNode1.fatherName == childNode2.fatherName || 
 				childNode1.motherName == childNode2.motherName);
 	}
-
+		return false;
+	}
 	@Override
 	public boolean isCousineOf(IPerson person1, IPerson person2) {
 		// TODO Auto-generated method stub
@@ -60,9 +63,30 @@ public class Baum implements IBaum {
 
 	@Override
 	public boolean isAuntOf(IPerson aunt, IPerson niece) {
-		// TODO Auto-generated method stub
-		return false;
+		Node auntNode = findNode(aunt.getName());
+		Node nieceNode = findNode(niece.getName());
+		
+		if(auntNode == null || nieceNode == null)
+		{
+			return false;
+		}
+		Node nieceMother = findNode(nieceNode.motherName);
+		
+		
+		if(nieceMother !=null && (auntNode.motherName == nieceMother.motherName ||
+				auntNode.fatherName == nieceMother.fatherName))
+		{
+		return true;
+			}
+		Node nieceFather = findNode(nieceNode.fatherName);
+		
+	if(nieceFather !=null && (auntNode.motherName == nieceFather.motherName ||
+			auntNode.fatherName == nieceFather.fatherName)){
+		return true;
 	}
+	
+		 return false;
+}
 
 	@Override
 	public boolean isGrandchildOf(IPerson grandchild, IPerson grandparent) {
