@@ -127,11 +127,15 @@ public class Baum implements IBaum {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean isGrandparentOf(IPerson grandparent, IPerson grandchild) {
-		// TODO Auto-generated method stub
-		return false;
+
+		IPerson person1 = grandchild;
+		IPerson person2 = grandparent;
+		
+	return isGrandchildOf(person1, person2);
+
 	}
 
 	private Node findNode(String name) {

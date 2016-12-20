@@ -185,4 +185,32 @@ public class BaumTest {
 		
 		assertFalse(baum.isGrandchildOf(son, grandmom));
 	}
+	
+	@Test
+	public void isGrandparentOfSuccessfullTest(){
+		
+		IPerson grandmom = new Person("Grandmom", Gender.FEMALE);
+		IPerson mother = new Person("Mother", Gender.FEMALE);
+		IPerson son = new Person("Son", Gender.MALE);
+		IBaum baum = new Baum();
+		baum.addRootPerson(grandmom);
+		baum.addChildToParent(mother, grandmom);
+		baum.addChildToParent(son, mother);
+		
+		assertTrue(baum.isGrandparentOf(grandmom, son));
+	}
+	
+	@Test
+	public void isGrandparentOfFailedTest() {
+
+		IPerson mother = new Person("Mother", Gender.FEMALE);
+		IPerson son = new Person("Son", Gender.MALE);
+		IPerson grandmom = new Person("Grandmom", Gender.FEMALE);
+		IBaum baum = new Baum();
+		baum.addRootPerson(mother);
+		baum.addChildToParent(mother, grandmom);
+		baum.addChildToParent(son, mother);
+
+		assertFalse(baum.isGrandparentOf(grandmom, son));
+	}
 }
