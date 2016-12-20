@@ -126,6 +126,63 @@ public class BaumTest {
 		baum.addChildToParent(childOfdaughter, daughter);
 		
 		assertTrue(baum.isCousineOf(childOfson, childOfdaughter));
+
+	}
+	/*
+	 * a Testcase for a tree as follows:
+	 *  mother(root) -- son (first child) -- a child of son (childOfSon) -- a child of childOfSon (grandchildOfSon) -- daughter
+	 * (second child) --- a child of daughter (childOfDaughter) So the
+	 * childOfDaughter and grandchildOfSon are aunt and nephew.
+	 */
+
+	@Test
+	public void isCousineOfFailedTest() {
+
+		IPerson mother = new Person("Mother", Gender.MALE);
+		IPerson son = new Person("Son", Gender.MALE);
+		IPerson daughter = new Person("Daughter", Gender.FEMALE);
+		IPerson childOfson = new Person("Son's child", Gender.MALE);
+		IPerson grandchildOfson = new Person("Son's grandchild", Gender.FEMALE);
+		IPerson childOfdaughter = new Person("Daughter's child", Gender.FEMALE);
+
+		IBaum baum = new Baum();
+		baum.addRootPerson(mother);
+		baum.addChildToParent(son, mother);
+		baum.addChildToParent(daughter, mother);
+		baum.addChildToParent(childOfson, son);
+		baum.addChildToParent(childOfdaughter, daughter);
+		baum.addChildToParent(childOfson, grandchildOfson);
+
+		assertFalse(baum.isCousineOf(grandchildOfson, childOfdaughter));
+
+	}
+	
+	@Test
+	public void isGrandchildOfSuccessfullTest(){
 		
+		IPerson grandmom = new Person("Grandmom", Gender.FEMALE);
+		IPerson mother = new Person("Mother", Gender.FEMALE);
+		IPerson son = new Person("Son", Gender.MALE);
+		IBaum baum = new Baum();
+		baum.addRootPerson(grandmom);
+		baum.addChildToParent(mother, grandmom);
+		baum.addChildToParent(son, mother);
+		
+		assertTrue(baum.isGrandchildOf(son, grandmom));
+	}
+	
+	@Test
+	public void isGrandchildOfFailedTest(){
+		
+		IPerson grandmom = new Person("Grandmom", Gender.FEMALE);
+		IPerson mother = new Person("Mother", Gender.FEMALE);
+		IPerson father = new Person("Father", Gender.MALE);
+		IPerson son = new Person("Son", Gender.MALE);
+		IBaum baum = new Baum();
+		baum.addRootPerson(grandmom);
+		baum.addChildToParent(mother, grandmom);
+		baum.addChildToParent(son, father);
+		
+		assertFalse(baum.isGrandchildOf(son, grandmom));
 	}
 }

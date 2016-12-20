@@ -43,8 +43,8 @@ public class Baum implements IBaum {
 		Node childNode2 = findNode(child2.getName());
 
 		if (childNode1 != null && childNode2 != null) {
-			return (childNode1.fatherName != null && childNode2.fatherName != null)
-					|| (childNode1.motherName != null && childNode2.motherName != null)
+			return (! childNode1.fatherName.equals(null) && !childNode2.fatherName.equals(null))
+					|| (!childNode1.motherName.equals(null) && !childNode2.motherName.equals(null))
 					|| (childNode1.fatherName == childNode2.fatherName
 							|| childNode1.motherName == childNode2.motherName);
 		}
@@ -109,10 +109,25 @@ public class Baum implements IBaum {
 
 	@Override
 	public boolean isGrandchildOf(IPerson grandchild, IPerson grandparent) {
+		Node grandchildNode = findNode(grandchild.getName());
+		Node grandparentNode = findNode(grandparent.getName());
 
+		if (grandparentNode == null) {
+			return false;
+		}
+		String grandparentName = grandparent.getName();
+		if (grandchildNode != null) {
+			Node mother = findNode(grandchildNode.motherName);
+			Node father = findNode(grandchildNode.fatherName);
+			if (mother != null) {
+				return (mother.motherName == grandparentName || mother.motherName == grandparentName);
+			} else if (father != null) {
+				return (father.motherName == grandparentName || father.fatherName == grandparentName);
+			}
+		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean isGrandparentOf(IPerson grandparent, IPerson grandchild) {
 		// TODO Auto-generated method stub
