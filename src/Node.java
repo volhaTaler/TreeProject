@@ -1,4 +1,4 @@
-
+import java.lang.*;
 public class Node {
 	String name;
 	Gender gender;
