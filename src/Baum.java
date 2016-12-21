@@ -1,15 +1,16 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+//import java.util.Iterator;
 
 public class Baum implements IBaum {
 
-	List<Node> nodes = new ArrayList<Node>();
+	HashMap<String, Node> nodes = new HashMap<String, Node>();
 
 	/* Füge einen Knoten in den Baum */
 	@Override
 	public void addRootPerson(IPerson person) {
 		Node node = new Node(person);
-		nodes.add(node);
+		nodes.put(person.getName(), node);
 
 	}
 
@@ -33,7 +34,7 @@ public class Baum implements IBaum {
 		} else {
 			childNode.motherName = parent.getName();
 		}
-		nodes.add(childNode);
+		nodes.put(child.getName(), childNode);
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public class Baum implements IBaum {
 		}
 		childNode.fatherName = father.getName();
 		childNode.motherName = mother.getName();
-		nodes.add(childNode);
+		nodes.put(child.getName(), childNode);
 
 	}
 
@@ -54,10 +55,7 @@ public class Baum implements IBaum {
 	public void addPartner(IPerson husband, IPerson wife) {
 		Node husbandNode = findNode(husband.getName());
 		Node wifeNode = findNode(wife.getName());
-		/*
-		 * if(wifeNode == null){ wifeNode = new Node(wife); nodes.add(wifeNode);
-		 * }
-		 */
+
 		if (husbandNode != null && wifeNode != null && husbandNode != wifeNode) {
 
 			if (husbandNode.partner == "" && wifeNode.partner == "") {
@@ -171,10 +169,9 @@ public class Baum implements IBaum {
 	}
 
 	private Node findNode(String name) {
-		for (Node node : nodes) {
-			if (node.name == name) {
-				return node;
-			}
+		 if(nodes.containsKey(name)) {
+				return nodes.get(name);
+			
 		}
 
 		return null;
