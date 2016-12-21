@@ -1,11 +1,11 @@
 import java.util.ArrayList;
-import java.lang.*;
 import java.util.List;
 
 public class Baum implements IBaum {
 
 	List<Node> nodes = new ArrayList<Node>();
 
+	/* Füge einen Knoten in den Baum */
 	@Override
 	public void addRootPerson(IPerson person) {
 		Node node = new Node(person);
@@ -13,27 +13,59 @@ public class Baum implements IBaum {
 
 	}
 
+	/*
+	 * Füge einen Elternteil zum Wurzelknoten oder zu einer unverheirateten
+	 * Person im Baum hinzu.
+	 */
 	@Override
 	public void addChildToParent(IPerson child, IPerson parent) {
 		Node parentNode = findNode(parent.getName());
 		if (parentNode == null) {
 			return;
 		}
-		Node childNode = new Node(child);
-		childNode.fatherName = parent.getName();
+
+		Node childNode = findNode(child.getName());
+		if (childNode == null) {
+			childNode = new Node(child);
+		}
+		if (parentNode.gender == Gender.MALE) {
+			childNode.fatherName = parent.getName();
+		} else {
+			childNode.motherName = parent.getName();
+		}
 		nodes.add(childNode);
 	}
 
 	@Override
 	public void addChildToParents(IPerson child, IPerson mother, IPerson father) {
-		// TODO Auto-generated method stub
+		Node childNode = new Node(child);
+		Node fatherNode = findNode(father.getName());
+		Node motherNode = findNode(mother.getName());
+		if (motherNode == null || fatherNode == null) {
+			return;
+		}
+		childNode.fatherName = father.getName();
+		childNode.motherName = mother.getName();
+		nodes.add(childNode);
 
 	}
 
 	@Override
-	public void addParnter(IPerson husbend, IPerson wife) {
-		// TODO Auto-generated method stub
+	public void addPartner(IPerson husband, IPerson wife) {
+		Node husbandNode = findNode(husband.getName());
+		Node wifeNode = findNode(wife.getName());
+		/*
+		 * if(wifeNode == null){ wifeNode = new Node(wife); nodes.add(wifeNode);
+		 * }
+		 */
+		if (husbandNode != null && wifeNode != null && husbandNode != wifeNode) {
 
+			if (husbandNode.partner == "" && wifeNode.partner == "") {
+
+				husbandNode.partner = wife.getName();
+				wifeNode.partner = husband.getName();
+			}
+		}
 	}
 
 	@Override
@@ -43,8 +75,8 @@ public class Baum implements IBaum {
 		Node childNode2 = findNode(child2.getName());
 
 		if (childNode1 != null && childNode2 != null) {
-			return (! childNode1.fatherName.equals(null) && !childNode2.fatherName.equals(null))
-					|| (!childNode1.motherName.equals(null) && !childNode2.motherName.equals(null))
+			return (childNode1.fatherName != "" && childNode2.fatherName != "")
+					|| (childNode1.motherName != "" && childNode2.motherName != "")
 					|| (childNode1.fatherName == childNode2.fatherName
 							|| childNode1.motherName == childNode2.motherName);
 		}
@@ -133,8 +165,8 @@ public class Baum implements IBaum {
 
 		IPerson person1 = grandchild;
 		IPerson person2 = grandparent;
-		
-	return isGrandchildOf(person1, person2);
+
+		return isGrandchildOf(person1, person2);
 
 	}
 

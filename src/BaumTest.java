@@ -86,7 +86,7 @@ public class BaumTest {
 		baum.addChildToParent(elderSonOfDaughter2, daughter2);
 		baum.addChildToParent(youngerSonOfDaughter2, daughter2);
 
-		assertTrue(baum.isUncleOf(youngerSonOfDaughter2, sonOfDaughter1));	
+		assertTrue(baum.isUncleOf(sonOfDaughter1, youngerSonOfDaughter2));	
 	}
 	// Testcase: the gender is incorrect
 	@Test
@@ -212,5 +212,42 @@ public class BaumTest {
 		baum.addChildToParent(son, mother);
 
 		assertFalse(baum.isGrandparentOf(grandmom, son));
+	}
+
+	/*
+	 * Testcase: Father has got married to fathersWife. Each of them had a
+	 * child. After their marriage the children are defined as siblings
+	 */
+	@Test
+	public void isSiblingOfForMarriedParentsSuccessfullTest() {
+
+		IPerson father = new Person("Father", Gender.MALE);
+		IPerson fathersWife = new Person("Mother-in-Law ", Gender.FEMALE);
+		IPerson son = new Person("Son", Gender.MALE);
+		IPerson daughter = new Person("Daughter", Gender.FEMALE);
+		IBaum baum = new Baum();
+		baum.addRootPerson(father);
+		baum.addRootPerson(fathersWife);
+		baum.addChildToParent(son, father);
+		baum.addPartner(father, fathersWife);
+		baum.addChildToParent(daughter, fathersWife);
+
+		assertTrue(baum.isSiblingOf(daughter, son));
+	}
+	
+	@Test
+	public void addParentToRootSuccessfullTest() {
+
+		IPerson father = new Person("Father", Gender.MALE);
+		IPerson fathersMother = new Person("Grandma", Gender.FEMALE);
+		IPerson son = new Person("Son", Gender.MALE); 
+		IBaum baum = new Baum();
+		baum.addRootPerson(father);
+		baum.addChildToParent(son, father);
+		baum.addRootPerson(fathersMother);
+		baum.addChildToParent(father, fathersMother);
+		
+
+		assertTrue(baum.isGrandchildOf(son, fathersMother));
 	}
 }
