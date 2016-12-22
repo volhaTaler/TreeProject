@@ -30,7 +30,7 @@ public class Baum implements IBaum {
 		if (childNode == null) {
 			childNode = new Node(child);
 		}
-		if (child.getName().equals("")) {
+		if (child.getName() == null) {
 			return;
 		}
 		nodes.put(child.getName(), childNode);
@@ -47,7 +47,7 @@ public class Baum implements IBaum {
 		Node childNode = new Node(child);
 		Node fatherNode = findNode(father.getName());
 		Node motherNode = findNode(mother.getName());
-		if (motherNode == null || fatherNode == null || child.getName().equals("")) {
+		if (motherNode == null || fatherNode == null || child.getName() == null) {
 			return;
 		}
 		if(father.getGender() == Gender.MALE && mother.getGender() == Gender.FEMALE){
