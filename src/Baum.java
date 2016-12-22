@@ -101,8 +101,9 @@ public class Baum implements IBaum {
 	@Override
 	public boolean isCousineOf(IPerson person1, IPerson person2) {
 		Node cousin1Node = findNode(person1.getName());
-		Node cousin2Node = findNode(person1.getName());
-		if (cousin1Node == null ||cousin2Node == null) {
+		Node cousin2Node = findNode(person2.getName());
+		
+		if (cousin1Node == null ||cousin2Node == null || cousin1Node == cousin2Node) {
 			return false;
 		}
 		return checkIfParentsAreSiblings(cousin1Node, cousin2Node);
@@ -117,7 +118,30 @@ public class Baum implements IBaum {
 		}
 		return isUncleOrAuntOf(uncleNode, nephewNode);
 	}
-
+	
+	@Override
+	public boolean isUncleOrAuntFromMotherSideOf(IPerson adult, IPerson child) {
+		Node adultNode = findNode(adult.getName());
+		Node childNode = findNode(child.getName());
+		
+		if (adultNode == null || childNode == null || findNode(childNode.motherName) == null || adultNode == childNode) {
+			return false;
+		}
+		return isUncleOrAuntOf(adultNode, childNode);
+	}
+	
+	@Override
+	public boolean isUncleOrAuntFromFatherSideOf(IPerson adult, IPerson child) {
+		Node adultNode = findNode(adult.getName());
+		Node childNode = findNode(child.getName());
+		
+		if (adultNode == null || childNode == null || findNode(childNode.fatherName) == null ||
+				adultNode == childNode || adult.getName() == childNode.fatherName) {
+			return false;
+		}
+		return isUncleOrAuntOf(adultNode, childNode);
+	}
+	
 	@Override
 	public boolean isAuntOf(IPerson aunt, IPerson niece) {
 		Node auntNode = findNode(aunt.getName());
@@ -160,22 +184,50 @@ public class Baum implements IBaum {
 	private boolean checkIfParentsAreSiblings(Node node1, Node node2) {
 		Node node1Mother = findNode(node1.motherName);
 		Node node2Mother = findNode(node2.motherName);
-		if (node1Mother != null && node2Mother != null && node1Mother.motherName.equals(node2Mother.motherName)) {
-			return true;
-		}
 
+		if (node1Mother != null && node2Mother != null) {
+
+			if (findNode(node1Mother.motherName) != null && findNode(node2Mother.motherName) != null
+					&& node1Mother.motherName.equals(node2Mother.motherName)) {
+				return true;
+			}
+			if (findNode(node1Mother.fatherName) != null && findNode(node2Mother.fatherName) != null
+					&& node1Mother.fatherName.equals(node2Mother.fatherName)) {
+				return true;
+			}
+		}
 		Node node1Father = findNode(node1.fatherName);
-		if (node1Father != null && node2Mother != null && node1Father.fatherName.equals(node2Mother.fatherName)) {
-			return true;
+		if (node1Father != null && node2Mother != null) {
+			if (findNode(node1Father.motherName) != null && findNode(node2Mother.motherName) != null
+					&& node1Father.motherName.equals(node2Mother.motherName)) {
+				return true;
+			}
+			if (findNode(node1Father.fatherName) != null && findNode(node2Mother.fatherName) != null
+					&& node1Father.fatherName.equals(node2Mother.fatherName)) {
+				return true;
+			}
 		}
-
 		Node node2Father = findNode(node2.fatherName);
-		if (node2Father != null && node1Mother != null && node2Father.fatherName.equals(node1Mother.fatherName)) {
-			return true;
+		if (node2Father != null && node1Mother != null) {
+			if (findNode(node2Father.motherName) != null && findNode(node1Mother.motherName) != null
+					&& node2Father.motherName.equals(node1Mother.motherName)) {
+				return true;
+			}
+			if (findNode(node2Father.fatherName) != null && findNode(node1Mother.fatherName) != null
+					&& node2Father.fatherName.equals(node1Mother.fatherName)) {
+				return true;
+			}
 		}
+		if (node1Father != null && node2Father != null) {
 
-		if (node1Father != null && node2Father != null && node1Father.fatherName.equals(node2Father.fatherName)) {
-			return true;
+			if (findNode(node1Father.motherName) != null && findNode(node2Father.motherName) != null
+					&& node1Father.motherName.equals(node2Father.motherName)) {
+				return true;
+			}
+			if (findNode(node1Father.fatherName) != null && findNode(node2Father.fatherName) != null
+					&& node1Father.fatherName.equals(node2Father.fatherName)) {
+				return true;
+			}
 		}
 		return false;
 	}

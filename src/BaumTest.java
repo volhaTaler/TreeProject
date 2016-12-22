@@ -98,20 +98,20 @@ public class BaumTest {
 
 	@Test
 	public void isCousineOfSuccessfulTest(){
-		IPerson father = new Person("Father", Gender.MALE);
-		IPerson son = new Person("Son", Gender.MALE);
-		IPerson daughter = new Person("Daughter", Gender.FEMALE);
-		IPerson childOfson = new Person("Son's child", Gender.MALE);
-		IPerson childOfdaughter = new Person("Daughter's child", Gender.FEMALE);
+		IPerson father = new Person("Fatherdd", Gender.FEMALE);
+		IPerson son = new Person("Sondd", Gender.FEMALE);
+		IPerson daughter = new Person("Daughterdd", Gender.FEMALE);
+		IPerson childOfSon = new Person("Son's child", Gender.MALE);
+		IPerson childOfDaughter = new Person("Daughter's child", Gender.FEMALE);
 		
 		IBaum baum = new Baum();
 		baum.addRootPerson(father);
 		baum.addChildToParent(son, father);
 		baum.addChildToParent(daughter, father);
-		baum.addChildToParent(childOfson, son);
-		baum.addChildToParent(childOfdaughter, daughter);
+		baum.addChildToParent(childOfSon, son);
+		baum.addChildToParent(childOfDaughter, daughter);
 		
-		assertTrue(baum.isCousineOf(childOfson, childOfdaughter));
+		assertTrue(baum.isCousineOf(childOfDaughter, childOfSon));
 
 	}
 	/*
@@ -136,7 +136,7 @@ public class BaumTest {
 		baum.addChildToParent(daughter, mother);
 		baum.addChildToParent(childOfson, son);
 		baum.addChildToParent(childOfdaughter, daughter);
-		baum.addChildToParent(childOfson, grandchildOfson);
+		baum.addChildToParent(grandchildOfson, childOfson);
 
 		assertFalse(baum.isCousineOf(grandchildOfson, childOfdaughter));
 	}
@@ -292,5 +292,69 @@ public class BaumTest {
 		assertTrue(baum.isAuntOf(daughter2, daughter));
 		assertTrue(baum.isGrandparentOf(granny, daughter));
 		assertTrue(baum.isSiblingOf(daughter2, daughter));
+	}
+	@Test
+	public void isUncleOrAuntFromMotherSideOfSuccessfulTest(){
+		IPerson mother =  new Person("Super Mother", Gender.FEMALE);
+		IPerson son = new Person("Sunny", Gender.MALE);
+		IPerson daughter = new Person("Sanny", Gender.FEMALE);
+		IPerson daughter2 = new Person("the Daughter of Sanny", Gender.FEMALE);
+	
+		IBaum baum = new Baum();
+		baum.addRootPerson(mother);
+		baum.addChildToParent(son, mother);
+		baum.addChildToParent(daughter, mother);
+		baum.addChildToParent(daughter2, daughter);
+
+		assertTrue(baum.isUncleOrAuntFromMotherSideOf(son, daughter2));	
+	}
+	@Test
+	public void isUncleOrAuntFromMotherSideOfFailedTest(){
+		
+		IPerson mother =  new Person("Super Mother", Gender.FEMALE);
+		IPerson father = new Person("Daddy", Gender.MALE);
+		IPerson son = new Person("Sunny", Gender.MALE);
+		IPerson daughter = new Person("Sanny", Gender.FEMALE);
+		IPerson daughter2 = new Person("the Daughter of Sanny", Gender.FEMALE);
+	
+		IBaum baum = new Baum();
+		baum.addRootPerson(mother);
+		baum.addRootPerson(father);
+		baum.addChildToParent(son, father);
+		baum.addChildToParent(daughter, mother);
+		baum.addChildToParent(daughter2, daughter);
+
+		assertFalse(baum.isUncleOrAuntFromMotherSideOf(son, daughter2));	
+	}
+	@Test
+	public void isUncleOrAuntFromFatherSideOfSuccessfulTest(){
+		IPerson father =  new Person("Super Daddy", Gender.MALE);
+		IPerson son = new Person("Sunny", Gender.MALE);
+		IPerson daughter = new Person("Sanny", Gender.FEMALE);
+		IPerson daughter2 = new Person("the Daughter of Sanny", Gender.FEMALE);
+	
+		IBaum baum = new Baum();
+		baum.addRootPerson(father);
+		baum.addChildToParent(son, father);
+		baum.addChildToParent(daughter, father);
+		baum.addChildToParent(daughter2, son);
+
+		assertTrue(baum.isUncleOrAuntFromFatherSideOf(daughter, daughter2));	
+	}
+	@Test
+	public void isUncleOrAuntFromFatherSideOfFailedTest(){
+		
+		IPerson mother =  new Person("Super Mother", Gender.FEMALE);
+		IPerson father = new Person("Daddy", Gender.MALE);
+		IPerson son = new Person("Sunny", Gender.MALE);
+		IPerson daughter = new Person("Sanny", Gender.FEMALE);
+		
+		IBaum baum = new Baum();
+		baum.addRootPerson(mother);
+		baum.addRootPerson(father);
+		baum.addChildToParent(son, father);
+		baum.addChildToParent(daughter, mother);
+
+		assertFalse(baum.isUncleOrAuntFromFatherSideOf(son, daughter));	
 	}
 }

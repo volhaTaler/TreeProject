@@ -1,10 +1,10 @@
-import java.lang.*;
+
 public class Node {
 	String name;
 	Gender gender;
 	String fatherName;
 	String motherName;
-	String spouse;
+	String partner;
 	
 	public Node(IPerson person){
 		
