@@ -8,7 +8,7 @@ public class Baum implements IBaum {
 	@Override
 	public boolean addRootPerson(IPerson person) {
 		Node node = new Node(person);
-		if (person.getName() != "") {
+		if (person.getName() != null) {
 			nodes.put(person.getName(), node);
 			return true;
 		}
@@ -30,13 +30,14 @@ public class Baum implements IBaum {
 		if (childNode == null) {
 			childNode = new Node(child);
 		}
-		if (child.getName() == "") {
+		if (child.getName().equals("")) {
 			return;
 		}
 		nodes.put(child.getName(), childNode);
 		if (parentNode.gender == Gender.MALE) {
 			childNode.fatherName = parent.getName();
-		} else {
+		} 
+		else {
 			childNode.motherName = parent.getName();
 		}
 	}
@@ -46,7 +47,7 @@ public class Baum implements IBaum {
 		Node childNode = new Node(child);
 		Node fatherNode = findNode(father.getName());
 		Node motherNode = findNode(mother.getName());
-		if (motherNode == null || fatherNode == null || child.getName() == "") {
+		if (motherNode == null || fatherNode == null || child.getName().equals("")) {
 			return;
 		}
 		if(father.getGender() == Gender.MALE && mother.getGender() == Gender.FEMALE){
@@ -78,25 +79,32 @@ public class Baum implements IBaum {
 	public boolean isSiblingOf(IPerson child1, IPerson child2) {
 		Node childNode1 = findNode(child1.getName());
 		Node childNode2 = findNode(child2.getName());
+		int count = 0;
 
 		if (childNode1 == null || childNode2 == null) {
 			return false;
 		}
 		
-		if (!childNode1.fatherName.equals(null) && !childNode2.fatherName.equals(null)) {
-			return childNode1.fatherName.equals(childNode2.fatherName);
+		if (findNode(childNode1.fatherName) != null && findNode(childNode2.fatherName) != null) {
+			if(childNode1.fatherName.equals(childNode2.fatherName)){
+				count++;
+			}
 		}
-		if (!(childNode1.motherName.equals(null) || childNode2.motherName.equals(null))) {
-			return childNode1.motherName.equals(childNode2.motherName);
+		if (findNode(childNode1.motherName) != null && findNode(childNode2.motherName) != null) {
+			if(childNode1.motherName.equals(childNode2.motherName)){
+				count++;
+			}
 		}
-		return false;
+		return count>0 ? true: false;
 	}
 
 	@Override
 	public boolean isCousineOf(IPerson person1, IPerson person2) {
 		Node cousin1Node = findNode(person1.getName());
 		Node cousin2Node = findNode(person1.getName());
-
+		if (cousin1Node == null ||cousin2Node == null) {
+			return false;
+		}
 		return checkIfParentsAreSiblings(cousin1Node, cousin2Node);
 	}
 
@@ -126,33 +134,13 @@ public class Baum implements IBaum {
 		Node grandchildNode = findNode(grandchild.getName());
 		Node grandparentNode = findNode(grandparent.getName());
 
-		if (grandparentNode == null) {
+		if (grandparentNode == null || grandchildNode == null) {
 			return false;
 		}
 		String grandparentName = grandparent.getName();
-		if (grandchildNode != null) {
-			Node mother = findNode(grandchildNode.motherName);
-			Node father = findNode(grandchildNode.fatherName);
-			if (mother != null) {
-				if (!mother.motherName.equals(null)) {
-					return mother.motherName.equals(grandparentName);
-				}
-				if (!mother.fatherName.equals(null)) {
-					return mother.fatherName.equals(grandparentName);
-				}
-			} else if (father != null) {
-				if (father.motherName != null) {
-					return (father.motherName.equals(grandparentName));
-				}
-				if (father.fatherName != null) {
-					return (father.fatherName.equals(grandparentName));
-				}
-			}
-		}
-		return false;
-
+		return checkGrandchildOf(grandchildNode, grandparentName);
 	}
-
+	
 	@Override
 	public boolean isGrandparentOf(IPerson grandparent, IPerson grandchild) {
 		IPerson person1 = grandchild;
@@ -170,60 +158,70 @@ public class Baum implements IBaum {
 
 	// The parameters are the nodes of cousins, that should be checked.
 	private boolean checkIfParentsAreSiblings(Node node1, Node node2) {
-
-		if (node1 == null || node2 == null) {
-			return false;
-		}
-
 		Node node1Mother = findNode(node1.motherName);
 		Node node2Mother = findNode(node2.motherName);
-
-		if (node1Mother != null && node2Mother != null) {
-			if (node1Mother.motherName.equals(node2Mother.motherName)) {
-				return true;
-			}
+		if (node1Mother != null && node2Mother != null && node1Mother.motherName.equals(node2Mother.motherName)) {
+			return true;
 		}
 
 		Node node1Father = findNode(node1.fatherName);
-		if (node1Father != null && node2Mother != null) {
-			if (node1Father.fatherName.equals(node2Mother.fatherName)) {
-				return true;
-			}
+		if (node1Father != null && node2Mother != null && node1Father.fatherName.equals(node2Mother.fatherName)) {
+			return true;
 		}
 
 		Node node2Father = findNode(node2.fatherName);
-		if (node2Father != null && node1Mother != null) {
-			if (node2Father.fatherName.equals(node1Mother.fatherName)) {
-				return true;
-			}
+		if (node2Father != null && node1Mother != null && node2Father.fatherName.equals(node1Mother.fatherName)) {
+			return true;
 		}
 
-		if (node1Father != null && node2Father != null) {
-			if (node1Father.fatherName.equals(node2Father.fatherName)) {
-				return true;
-			}
+		if (node1Father != null && node2Father != null && node1Father.fatherName.equals(node2Father.fatherName)) {
+			return true;
 		}
-
 		return false;
 	}
 
 	private boolean isUncleOrAuntOf(Node person1, Node person2) {
-
 		Node siblingOfParentNode = person1;
 		Node childNode = person2;
 		Node childNodeMother = findNode(childNode.motherName);
 
 		if (childNodeMother != null && (siblingOfParentNode.motherName == childNodeMother.motherName
-				|| childNodeMother.fatherName == siblingOfParentNode.fatherName)) {
+				|| siblingOfParentNode.fatherName == childNodeMother.fatherName)) {
 			return true;
 		}
-		Node childNodeFather = findNode(childNode.fatherName);
 
+		Node childNodeFather = findNode(childNode.fatherName);
 		if (childNodeFather != null && (siblingOfParentNode.motherName == childNodeFather.motherName
 				|| siblingOfParentNode.fatherName == childNodeFather.fatherName)) {
 			return true;
 		}
-
+		return false;
+	}
+	
+	private boolean checkGrandchildOf(Node child, String grandparent) {
+		Node grandchildNode = child;
+		String grandparentName = grandparent;
+		
+		if (grandchildNode != null) {
+			Node mother = findNode(grandchildNode.motherName);
+			Node father = findNode(grandchildNode.fatherName);
+			if (mother != null) {
+				if (findNode(mother.motherName) != null && mother.motherName.equals(grandparentName)) {
+					return true;
+				}
+				if (findNode(mother.fatherName) != null && mother.fatherName.equals(grandparentName)) {
+					return true;
+				}
+			}
+			 if (father != null) {
+				if (findNode(father.motherName) != null && father.motherName.equals(grandparentName)) {
+					return true;
+				}
+				if (findNode(father.fatherName) != null && father.fatherName.equals(grandparentName)) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 }
