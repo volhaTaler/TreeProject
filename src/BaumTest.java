@@ -12,8 +12,6 @@ public class BaumTest {
 
 		IBaum baum = new Baum();
 		baum.addRootPerson(father);
-		baum.addRootPerson(son);
-		baum.addRootPerson(daughter);
 		baum.addChildToParent(son, father);
 		baum.addChildToParent(daughter, father);
 
@@ -38,9 +36,7 @@ public class BaumTest {
 
 		IBaum baum = new Baum();
 		baum.addRootPerson(father);
-		baum.addRootPerson(son);
 		baum.addRootPerson(daughter);
-		baum.addRootPerson(sonOfSon);
 		baum.addChildToParent(son, father);
 		baum.addChildToParent(daughter, father);
 		baum.addChildToParent(sonOfSon, son);
@@ -78,10 +74,7 @@ public class BaumTest {
 		IPerson sonOfDaughter1 = new Person("Son of the Daughter", Gender.MALE);
 
 		IBaum baum = new Baum();
-		baum.addRootPerson(mother);
 		baum.addRootPerson(son);
-		baum.addRootPerson(daughter1);
-		baum.addRootPerson(sonOfSon1);
 		baum.addRootPerson(sonOfDaughter1);
 		baum.addChildToParent(son, mother);
 		baum.addChildToParent(daughter1, son);
@@ -89,6 +82,7 @@ public class BaumTest {
 		baum.addChildToParent(sonOfDaughter1, daughter1);
 
 		assertTrue(baum.isUncleOrAuntFromMotherSideOf(sonOfSon1, sonOfDaughter1));
+		assertTrue(baum.isGrandparentOf(mother, sonOfSon1));
 	}
 
 	// Testcase: the gender is incorrect
@@ -105,7 +99,7 @@ public class BaumTest {
 		baum.addChildToParent(elderDaughter, mother);
 		baum.addChildToParent(sonOfDaughter, youngerDaughter);
 
-		assertFalse(baum.isUncleOrAuntFromMotherSideOf(elderDaughter, sonOfDaughter));
+		assertFalse(baum.isUncleOrAuntFromMotherSideOf(sonOfDaughter, sonOfDaughter));
 	}
 
 	@Test
@@ -208,7 +202,6 @@ public class BaumTest {
 		IPerson son = new Person("Son", Gender.MALE);
 		IPerson grandmom = new Person("Grandmom", Gender.FEMALE);
 		IBaum baum = new Baum();
-		baum.addRootPerson(mother);
 		baum.addChildToParent(mother, grandmom);
 		baum.addChildToParent(son, mother);
 
@@ -229,11 +222,9 @@ public class BaumTest {
 		IBaum baum = new Baum();
 		baum.addRootPerson(father);
 		baum.addRootPerson(fathersWife);
-		baum.addRootPerson(son);
-		baum.addRootPerson(daughter);
 		baum.addChildToParent(son, father);
 		baum.addPartner(father, fathersWife);
-		baum.addChildToParents(daughter, fathersWife, father);
+		baum.addChildToParent(daughter, fathersWife);
 		baum.addChildToParent(son, fathersWife);
 
 		assertTrue(baum.isSiblingOf(daughter, son));
@@ -255,7 +246,7 @@ public class BaumTest {
 		baum.addRootPerson(daughter);
 		baum.addPartner(father, fathersWife);
 		baum.addChildToParent(daughter, father2);
-		baum.addChildToParents(son, fathersWife, father);
+		baum.addChildToParent(son, father);
 
 		assertFalse(baum.isSiblingOf(daughter, son));
 	}
@@ -289,8 +280,6 @@ public class BaumTest {
 
 		IBaum baum = new Baum();
 		baum.addRootPerson(mother);
-		baum.addRootPerson(son);
-		baum.addRootPerson(mother2);
 		baum.addChildToParent(son, mother);
 		baum.addRootPerson(daughter);
 		baum.addChildToParent(daughter, mother);
@@ -304,34 +293,6 @@ public class BaumTest {
 		assertFalse(baum.isSiblingOf(son, daughter));
 	}
 
-	/*
-	 * the following relations are accepted by the program: granny is mother of
-	 * son1 --- son2 ---daughter -----daughter2 son1 is father of daughter.
-	 * There are the following relationships between members: son2 is an uncle
-	 * of daughter, daughter2 is an aunt and a sister of daughter granny is a
-	 * mother and a grandmother of daughter.
-	 */
-	@Test
-	public void specificRelationsAnotherTest() {
-		IPerson granny = new Person("Super Mother", Gender.FEMALE);
-		IPerson son1 = new Person("Sonny", Gender.MALE);
-		IPerson daughter = new Person("Sanny", Gender.FEMALE);
-		IPerson daughter2 = new Person("Sanny2", Gender.FEMALE);
-
-		IBaum baum = new Baum();
-		baum.addRootPerson(granny);
-		baum.addRootPerson(son1);
-		baum.addRootPerson(daughter);
-		baum.addRootPerson(daughter2);
-		baum.addChildToParent(son1, granny);
-		baum.addChildToParents(daughter, granny, son1);
-		baum.addChildToParent(daughter2, granny);
-
-		assertTrue(baum.isUncleOrAuntFromMotherSideOf(daughter2, daughter));
-		assertTrue(baum.isGrandparentOf(granny, daughter));
-		assertTrue(baum.isSiblingOf(daughter2, daughter));
-	}
-
 	@Test
 	public void isUncleOrAuntFromMotherSideOfSuccessfulTest() {
 		IPerson mother = new Person("Super Mother", Gender.FEMALE);
@@ -341,9 +302,6 @@ public class BaumTest {
 
 		IBaum baum = new Baum();
 		baum.addRootPerson(mother);
-		baum.addRootPerson(son);
-		baum.addRootPerson(daughter);
-		baum.addRootPerson(daughter2);
 		baum.addChildToParent(son, mother);
 		baum.addChildToParent(daughter, mother);
 		baum.addChildToParent(daughter2, daughter);
@@ -379,9 +337,6 @@ public class BaumTest {
 
 		IBaum baum = new Baum();
 		baum.addRootPerson(father);
-		baum.addRootPerson(son);
-		baum.addRootPerson(daughter);
-		baum.addRootPerson(daughter2);
 		baum.addChildToParent(son, father);
 		baum.addChildToParent(daughter, father);
 		baum.addChildToParent(daughter2, son);

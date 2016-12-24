@@ -17,53 +17,35 @@ public class Baum implements IBaum {
 
 	/*
 	 * Füge einen Elternteil zum Wurzelknoten oder zu einer unverheirateten
-	 * Person im Baum hinzu.
+	 * Person im Baum hinzu. Wenn das Kind noch nicht im Baum ist - wird einen neuen KindKnoten in den Baum hinzugefuegt.
+	 * Wenn das Elternteil noch nicht im Baum ist - wird einen neuen ElternKnoten in den Baum hizugefuegt.
+	 * Die Situation, wenn KindKnoten und Elternknoten im Baum nicht vorhanden sind, wird nicht akzeptiert. 
 	 */
 	@Override
 	public void addChildToParent(IPerson child, IPerson parent) {
-		if (isNotValidPerson(parent) || isNotValidPerson(child)) {
+		if (isNotValidPerson(child) || isNotValidPerson(parent)) {
 			return;
 		}
 		Node parentNode = findNode(parent.getName());
 		Node childNode = findNode(child.getName());
-		if (isNotValidNode(parentNode) || isNotValidNode(childNode)) {
+		if (isNotValidNode(childNode) && isNotValidNode(parentNode) ) {
 			return;
 		}
+		if (isNotValidNode(childNode)) {
+			childNode = new Node(child);
+			nodes.put(child.getName(), childNode);
+		}
+		if(isNotValidNode(parentNode)){
+			parentNode = new Node(parent);
+			nodes.put(parent.getName(), parentNode);
+		}
 
-		nodes.put(child.getName(), childNode);
+		
 		if (parentNode.gender == Gender.MALE) {
 			childNode.fatherName = parent.getName();
 		} else {
 			childNode.motherName = parent.getName();
 		}
-
-	}
-
-	@Override
-	public void addChildToParents(IPerson child, IPerson mother, IPerson father) {
-		if (isNotValidPerson(child) || isNotValidPerson(mother) || isNotValidPerson(father)) {
-			return;
-		}
-
-		Node childNode = findNode(child.getName());
-		Node fatherNode = findNode(father.getName());
-		Node motherNode = findNode(mother.getName());
-		if (isNotValidNode(motherNode) || isNotValidNode(fatherNode) || isNotValidNode(childNode)) {
-			return;
-		}
-		if (father.getGender() == Gender.MALE && mother.getGender() == Gender.FEMALE) {
-			childNode.fatherName = father.getName();
-			childNode.motherName = mother.getName();
-		} else {
-			/*
-			 * if parents have the same gender or the parameters are in the
-			 * wrong order.
-			 */
-			childNode.motherName = father.getName();
-			childNode.fatherName = mother.getName();
-		}
-		nodes.put(child.getName(), childNode);
-
 	}
 
 	@Override

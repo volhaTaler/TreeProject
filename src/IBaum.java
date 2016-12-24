@@ -3,7 +3,6 @@ public interface IBaum {
 	
 	void addRootPerson(IPerson person);
 	void addChildToParent(IPerson child, IPerson parent);
-	void addChildToParents(IPerson child, IPerson mother, IPerson father);
 	boolean addPartner(IPerson husbend, IPerson wife);
 	
 	
